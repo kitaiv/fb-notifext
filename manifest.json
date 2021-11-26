@@ -1,0 +1,44 @@
+{
+  "name": "FBnotifext",
+  "description": "Facebook notification live videos parser",
+  "version": "1.0",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "assets/img/logo48.png",
+      "64": "assets/img/logo64.png",
+      "128": "assets/img/logo128.png"
+    }
+  },
+  "background": {
+    "scripts": ["./background.js"]
+  },
+  "content_scripts":[
+    {
+      "matches":["<all_urls>"],
+      "js": ["app.js"]
+    }
+  ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "MacCtrl+Shift+F"
+      },
+      "description": "Opens popup.html"
+    }
+  },
+  "externally_connectable": {
+    "matches": ["https://*.facebook.com/*"]
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "*://*/*",
+    "activeTab",
+    "declarativeContent",
+    "<all_urls>"
+  ],
+  "content_security_policy": "script-src 'self' https://cdn.firebase.com https://apis.google.com https://www.gstatic.com; object-src 'self'"
+}
