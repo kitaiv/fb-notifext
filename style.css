@@ -11,7 +11,6 @@ html, body{
 }
 
 .pictures-wrapper img{
-    cursor: pointer;
     margin-left: .2rem
 }
 
@@ -80,7 +79,6 @@ html, body{
     margin: -1em 0 0 1.5em;
     -webkit-animation: spinner 1500ms infinite linear;
     -moz-animation: spinner 1500ms infinite linear;
-    -ms-animation: spinner 1500ms infinite linear;
     -o-animation: spinner 1500ms infinite linear;
     animation: spinner 1500ms infinite linear;
     border-radius: 0.7em;
