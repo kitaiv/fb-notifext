@@ -10,6 +10,17 @@ const extId = chrome.runtime.id
 const baseAppUrl = `chrome-extension://${extId}/`
 
 if (window.location.href === baseAppUrl + 'main.html') {
+    const active = document.querySelector('#active')
+    const popover = document.querySelector('#show-popover')
+    active.style.display = 'none';
+    document.querySelector('#more-btn').addEventListener('click', e => {
+        if (popover.classList.contains('is-open')) {
+            popover.classList.remove('is-open')
+            e.stopPropagation()
+        } else {
+            popover.classList.add('is-open')
+        }
+    })
     document.querySelector('#logout').addEventListener('click', () => {
         chrome.runtime.sendMessage({message: 'user_logout'}, (response) => {
             if (response.message === 'success') {
@@ -23,13 +34,10 @@ if (window.location.href === baseAppUrl + 'main.html') {
 }
 
 const output = document.querySelector('#count'),
-    loader = document.querySelector('.loading'),
     collectedLinksAmount = document.querySelector('h3>strong>mark'),
     collectedLinksWrapper = document.querySelector('strong'),
-    exportButton = document.querySelector('#export');
-
-
-
+    exportButton = document.querySelector('#export'),
+    toggleStart = document.querySelector('#toggleStart');
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     // If the received message has the expected format...
@@ -40,15 +48,19 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 });
 
+const changeStatus = (itemId, property) => {
+    const item = document.querySelector(`#${itemId}`)
+    item.style.display = property
+}
 const loaded = isLoaded => {
     if (isLoaded) {
-        loader.style.display = 'none'
         output.style.display = 'inline'
         collectedLinksWrapper.style.display = 'none'
+        changeStatus('loader', 'none')
     } else {
-        loader.style.display = 'inline-block'
         output.style.display = 'none'
         collectedLinksWrapper.style.display = 'inline'
+        changeStatus('loader', 'block')
     }
 }
 
@@ -60,20 +72,25 @@ const data =
     localStorage.getItem('userData') ? JSON.parse(localStorage.userData) : null
 const user = data ? data.user : undefined
 
-if(user) document.querySelector('h3 span').textContent = user.displayName
-
-
-const baseImgPath = 'assets/img/'
-const startBtn = document.querySelector('#start')
+if (user) {
+    document.querySelector('#displayName').textContent = user.displayName
+    document.querySelector('#userPic').setAttribute('src', data.additionalUserInfo.profile.picture.data.url)
+}
 
 chrome.storage.sync.get(['isParserStarted'], result => {
     if (result.isParserStarted) {
-        startBtn.setAttribute('src', baseImgPath + 'pause48.png')
+
         loaded(false)
         collectedLinksAmount.textContent = Object.values(JSON.parse(localStorage.links)).length
+        changeStatus('inactive', 'none')
+        changeStatus('active', 'block')
+        toggleStart.checked = true
     } else {
-        startBtn.setAttribute('src', baseImgPath + 'start48.png')
+
         loaded(true)
+        changeStatus('inactive', 'block')
+        changeStatus('active', 'none')
+        toggleStart.checked = false
     }
 })
 
@@ -174,24 +191,27 @@ function toggleParser(isStarted) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    startBtn.addEventListener('click', () => {
-        const startImgSrc = startBtn.getAttribute('src')
-
+    toggleStart.addEventListener('click', e => {
+        const toggler = e.target;
         //Parser has been started
-        if (startImgSrc === baseImgPath + 'start48.png') {
+        if (toggler.checked) {
             //should add some logic here
             chrome.runtime.sendMessage({message: 'get_fb_tab'}, response => {
-                if(response.data.length < 1){
+                if (response.data.length < 1) {
                     //facebook notification tab is NOT opened
+                    toggler.checked = false
                     document.querySelector('.notifs>p').textContent = ''
                     setTimeout(() => {
                         document.querySelector('.notifs>p').textContent = 'Cannot start parsing. Facebook' +
                             ' notifications' +
                             ' tab is not opened!'
                     }, 500)
-                }else{
+                }else {
                     //facebook notification tab is opened
-                    startBtn.setAttribute('src', baseImgPath + 'pause48.png')
+                    changeStatus('active', 'block')
+                    changeStatus('inactive', 'none')
+                    changeStatus('loader', 'block')
+
                     chrome.storage.sync.set({isParserStarted: true})
                     loaded(false)
                     //this function is used in the specific app with it was started on, not in your chrome extension popup
@@ -204,12 +224,13 @@ document.addEventListener('DOMContentLoaded', () => {
             //Background script
             return true
         }
-
         //Parser has been stopped
-        if (startImgSrc === baseImgPath + 'pause48.png') {
+        else {
             //should add some logic here
             chrome.storage.sync.set({isParserStarted: false})
-            startBtn.setAttribute('src', baseImgPath + 'start48.png')
+            changeStatus('inactive', 'block')
+            changeStatus('active', 'none')
+            changeStatus('loader', 'none')
 
             chrome.runtime.sendMessage({message: 'off'})
 

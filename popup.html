@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="spectrum spectrum--medium spectrum--light">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -12,14 +12,22 @@
     <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 
+    <link rel="stylesheet" href="node_modules/@spectrum-css/vars/dist/spectrum-global.css">
+    <link rel="stylesheet" href="node_modules/@spectrum-css/vars/dist/spectrum-medium.css">
+    <link rel="stylesheet" href="node_modules/@spectrum-css/vars/dist/spectrum-light.css">
+    <link rel="stylesheet" href="node_modules/@spectrum-css/page/dist/index-vars.css">
+    <link rel="stylesheet" href="node_modules/@spectrum-css/button/dist/index-vars.css">
+
     <link rel="stylesheet" href="style.css"/>
+
+
 </head>
 <body>
-    <button id="login">Login</button>
-    <h1>Welcome to My Awesome App</h1>
+    <div class="spectrum-Typography">
+        <h2 class="spectrum-Heading spectrum-Heading--sizeL">Sign in first:</h2>
+    </div>
     <div id="firebaseui-auth-container"></div>
     <div id="loader">Loading...</div>
-
     <script src="popup-script.js"></script>
 </body>
 </html>

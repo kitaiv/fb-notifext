@@ -60,8 +60,4 @@ const uiConfig = {
     // Privacy policy url.
     // privacyPolicyUrl: '<your-privacy-policy-url>'
 };
-
-document.querySelector('#login').addEventListener('click', () => {
-    // The start method will wait until the DOM is loaded.
-    ui.start('#firebaseui-auth-container', uiConfig);
-})
+ui.start('#firebaseui-auth-container', uiConfig);

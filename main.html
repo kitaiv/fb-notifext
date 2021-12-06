@@ -1,32 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="spectrum spectrum--medium spectrum--light">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>-</title>
+
+    <link rel="stylesheet" href="node_modules/@spectrum-css/vars/dist/spectrum-global.css">
+    <link rel="stylesheet" href="node_modules/@spectrum-css/vars/dist/spectrum-medium.css">
+    <link rel="stylesheet" href="node_modules/@spectrum-css/vars/dist/spectrum-light.css">
+    <link rel="stylesheet" href="node_modules/@spectrum-css/page/dist/index-vars.css">
+    <link rel="stylesheet" href="node_modules/@spectrum-css/button/dist/index-vars.css">
+
+    <!--span-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/badge/dist/index-vars.css">
+
+    <!--action-menu-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/actionmenu/dist/index-vars.css">
+    <link rel="stylesheet" href="node_modules/@spectrum-css/actionbutton/dist/index-vars.css"
+          data-dependency="actionbutton">
+    <link rel="stylesheet" href="node_modules/@spectrum-css/popover/dist/index-vars.css" data-dependency="popover">
+    <link rel="stylesheet" href="node_modules/@spectrum-css/menu/dist/index-vars.css" data-dependency="popover">
+
+    <!--icon-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/icon/dist/index-vars.css">
+
+    <!--splitview-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/splitview/dist/index-vars.css">
+
+    <!--avatar-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/avatar/dist/index-vars.css">
+
+    <!--switch-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/switch/dist/index-vars.css">
+
+    <!--typography-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/typography/dist/index-vars.css">
+
+    <!--button-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/button/dist/index-vars.css">
+
+    <!--page-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/page/dist/index-vars.css">
+
+    <!--status-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/statuslight/dist/index-vars.css">
+
+    <!--progresscircle-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/progresscircle/dist/index-vars.css">
+
     <link rel="stylesheet" href="./style.css">
+
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-url="img/spectrum-icons.svg"
+         style="display: none;">
+        <symbol id="spectrum-icon-18-More" viewBox="0 0 36 36">
+            <circle cx="17.8" cy="18.2" r="3.8"></circle>
+            <circle cx="29.5" cy="18.2" r="3.8"></circle>
+            <circle cx="6.1" cy="18.2" r="3.68"></circle>
+        </symbol>
+    </svg>
 </head>
 <body>
-    <h3>Signed in as <span style="color: sandybrown"></span></h3>
-    <button id="logout">logout</button>
-    <h2>total links parsed:
-        <span id="count"></span>
-        <div class="loading">Loading&#8230;</div>
-    </h2>
-    <div class="control-container">
-        <h3>
-            <strong>
-                collected links: +<mark>0</mark> link(s)
-            </strong>
-        </h3>
-        <div class="pictures-wrapper">
-            <img src="assets/img/start48.png" width="32px" height="32px" alt="start" id="start">
-<!--            <img src="assets/img/stop48.png"  width="32px" height="32px" alt="stop" id="stop">-->
-            <img src="assets/img/export48.png"  width="36px" height="36px" alt="export" id="export">
+<div class="app">
+    <div class="spectrum-SplitView spectrum-SplitView--horizontal" style="height: fit-content; display: flex;
+    align-items: center">
+        <div class="spectrum-SplitView-pane" style="width: 6rem">
+            <button class="spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet"
+                    id="more-btn">
+                <svg class="spectrum-Icon spectrum-Icon--sizeM" focusable="false" aria-hidden="true">
+                    <use xlink:href="#spectrum-icon-18-More"/>
+                </svg>
+            </button>
+            <div class="spectrum-Popover spectrum-Popover--bottom" id="show-popover">
+                <ul class="spectrum-Menu" role="menu">
+                    <li class="spectrum-Menu-item" role="menuitem" tabindex="0" id="logout">
+                        <span class="spectrum-Menu-itemLabel">Logout</span>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="notifs">
-            <p style="color: orangered"></p>
+        <div class="spectrum-SplitView-splitter"></div>
+        <div class="spectrum-SplitView-pane" style="flex: 1">
+            <div class="spectrum-Examples-item" style="display: flex; align-items: center;">
+                <div class="infoGroup" style="display: flex; flex-direction: column; align-items: flex-start">
+                    <h3 class="spectrum-Heading spectrum-Heading--sizeXS spectrum-Examples-itemHeading"
+                        id="displayName" style="margin-right: .5rem"></h3>
+                    <div class="spectrum-StatusLight spectrum-StatusLight--sizeS spectrum-StatusLight--neutral"
+                         id="inactive"
+                    >Inactive</div>
+                    <div class="spectrum-StatusLight spectrum-StatusLight--sizeS spectrum-StatusLight--info"
+                         style="align-items: baseline" id="active">Active</div>
+                </div>
+                <div class="spectrum-Avatar spectrum-Avatar--size700">
+                    <img class="spectrum-Avatar-image"
+                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ5gbXcLy_6BCMsra8QvsznwMAXjTlmH2IQA&usqp=CAU"
+                         alt="Avatar" id="userPic">
+                </div>
+            </div>
         </div>
     </div>
-    <script src="app.js" defer></script>
+</div>
+
+<!--TOTAL COUNT-->
+<div class="block-total" style="width: fit-content; margin: 0 auto">
+    <div class="spectrum-SplitView spectrum-SplitView--horizontal" style="height: fit-content; align-items: center;
+     margin-top: 2rem; margin-bottom: 2rem">
+        <div class="spectrum-SplitView-pane" style="width: 6rem">
+            <p class="spectrum-Detail spectrum-Detail--sizeXL">Total:</p>
+        </div>
+        <div class="spectrum-SplitView-splitter"></div>
+        <div class="spectrum-SplitView-pane" style="flex: 1; width: 1rem">
+            <p class="spectrum-Body spectrum-Body--sizeM" id="count"></p>
+        </div>
+
+        <!--loader-->
+        <div class="spectrum-ProgressCircle spectrum-ProgressCircle--indeterminate spectrum-ProgressCircle--small"
+             id="loader">
+            <div class="spectrum-ProgressCircle-track"></div>
+            <div class="spectrum-ProgressCircle-fills">
+                <div class="spectrum-ProgressCircle-fillMask1">
+                    <div class="spectrum-ProgressCircle-fillSubMask1">
+                        <div class="spectrum-ProgressCircle-fill"></div>
+                    </div>
+                </div>
+                <div class="spectrum-ProgressCircle-fillMask2">
+                    <div class="spectrum-ProgressCircle-fillSubMask2">
+                        <div class="spectrum-ProgressCircle-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="spectrum-SplitView spectrum-SplitView--horizontal" style="height: fit-content; display: flex">
+    <div class="spectrum-SplitView-pane aligner" style="width: 10rem; vertical-align: center">
+        <div style="margin-bottom: 1rem">
+            <p class="spectrum-Body spectrum-Body--sizeM">On/off parser</p>
+        </div>
+        <div class="button r" id="button-3">
+            <label for="toggleStart"></label>
+            <input type="checkbox" class="checkbox" id="toggleStart">
+            <div class="knobs"></div>
+            <div class="layer"></div>
+        </div>
+    </div>
+    <div class="spectrum-SplitView-splitter"></div>
+    <div class="spectrum-SplitView-pane aligner" style="flex: 1">
+        <div style="margin-bottom: 1rem">
+            <p class="spectrum-Body spectrum-Body--sizeM">Export links</p>
+        </div>
+        <div class="spectrum-SplitView-pane" style="width: 6rem">
+            <button class="spectrum-Button spectrum-Button--secondary spectrum-Button--sizeM" disabled>
+                <span class="spectrum-Button-label" id="export">Export</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="control-container">
+    <h3>
+        <strong>
+            collected links: +
+            <mark>0</mark>
+            link(s)
+        </strong>
+    </h3>
+    <div class="notifs">
+        <p style="color: orangered"></p>
+    </div>
+</div>
+</div>
+<script src="app.js" defer></script>
 </body>
 </html>

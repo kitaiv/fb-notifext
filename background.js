@@ -38,14 +38,7 @@ pingParser = setInterval(() => {
                     result => {
                 try {
                     if (result.length < 1) {
-                        notifyOnce < 1 ? chrome.notifications.create('notify1', notifOpt) : false
-                        ++notifyOnce
-                        chrome.browserAction.setBadgeText({text: ''})
-                        chrome.browserAction.setBadgeBackgroundColor({color: '#0000'})
-                        chrome.storage.sync.set({isParserStarted: false})
-                        console.log('tab has been closed')
-                        return true
-                    } else {
+ v                    } else {
                         chrome.tabs.executeScript(result[0].id, {
                             code: '(' + modifyDOM + ')();'
                         }, results => {

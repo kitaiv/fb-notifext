@@ -1,13 +1,33 @@
-html, body{
-    width: 400px;
-    height: 200px;
-    transition: 1s ease;
+*
+{
+    user-select: none;
+    -webkit-tap-highlight-color:transparent;
+    transition: 0.2s ease;
+
 }
 
+*:focus
+{
+    outline: none;
+}
+
+
+html, body{
+    width: 300px;
+    height: 250px;
+}
+
+.spectrum-Typography .spectrum-Heading--sizeL{
+    text-align: center;
+}
 .content-wrapper{
     margin: .1rem;
     width: 90vh;
     height: 75vh;
+}
+
+.app{
+    width: 400px
 }
 
 .pictures-wrapper img{
@@ -19,15 +39,14 @@ html, body{
 }
 
 .control-container{
-    position: absolute;
+    /*position: absolute;*/
     margin: .5rem;
     bottom: 0;
     left: 0;
 }
 
 #logout{
-    margin: .5rem;
-    position: absolute;
+    /*position: absolute;*/
     right: 0;
     top: 0;
 }
@@ -151,4 +170,105 @@ html, body{
         -o-transform: rotate(360deg);
         transform: rotate(360deg);
     }
+}
+
+/*switch*/
+.knobs, .layer
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #ececec;
+}
+
+.button
+{
+    position: relative;
+    top: 50%;
+    width: 74px;
+    height: 36px;
+    margin: 0 auto 0 auto;
+    overflow: hidden;
+}
+
+.knobs
+{
+    z-index: 2;
+}
+
+.layer
+{
+    width: 100%;
+    background-color: #ebf7fc;
+    transition: 0.3s ease all;
+    z-index: 1;
+}
+
+.button.r, .button.r .layer
+{
+    border-radius: 100px;
+}
+
+#button-3 .knobs:before {
+    content: 'OFF';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 20px;
+    height: 10px;
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+    padding: 9px 4px;
+    background-color: #F44336;
+    border-radius: 50%;
+    transition: 0.3s ease all, left 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15);
+}
+
+#button-3 .checkbox:active + .knobs:before
+{
+    width: 46px;
+    border-radius: 100px;
+}
+
+#button-3 .checkbox:checked:active + .knobs:before
+{
+    margin-left: -26px;
+}
+
+#button-3 .checkbox:checked + .knobs:before
+{
+    content: 'ON';
+    left: 42px;
+    background-color: #03A9F4;
+}
+
+#button-3 .checkbox:checked ~ .layer {
+    background-color: #fcebeb !important;
+}
+
+.checkbox
+{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.aligner{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.block-total{
+    width: 100%;
 }
