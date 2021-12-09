@@ -11,10 +11,15 @@
     outline: none;
 }
 
+.m{
+    margin: 1rem;
+}
 
 html, body{
-    width: 300px;
+    /*change popup size here*/
+    width: 350px;
     height: 250px;
+    margin: 0;
 }
 
 .spectrum-Typography .spectrum-Heading--sizeL{

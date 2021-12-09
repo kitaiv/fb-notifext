@@ -10,9 +10,6 @@
     <link rel="stylesheet" href="node_modules/@spectrum-css/page/dist/index-vars.css">
     <link rel="stylesheet" href="node_modules/@spectrum-css/button/dist/index-vars.css">
 
-    <!--span-->
-    <link rel="stylesheet" href="node_modules/@spectrum-css/badge/dist/index-vars.css">
-
     <!--action-menu-->
     <link rel="stylesheet" href="node_modules/@spectrum-css/actionmenu/dist/index-vars.css">
     <link rel="stylesheet" href="node_modules/@spectrum-css/actionbutton/dist/index-vars.css"
@@ -29,9 +26,6 @@
     <!--avatar-->
     <link rel="stylesheet" href="node_modules/@spectrum-css/avatar/dist/index-vars.css">
 
-    <!--switch-->
-    <link rel="stylesheet" href="node_modules/@spectrum-css/switch/dist/index-vars.css">
-
     <!--typography-->
     <link rel="stylesheet" href="node_modules/@spectrum-css/typography/dist/index-vars.css">
 
@@ -44,11 +38,15 @@
     <!--status-->
     <link rel="stylesheet" href="node_modules/@spectrum-css/statuslight/dist/index-vars.css">
 
+    <!--helptext-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/helptext/dist/index-vars.css">
+
     <!--progresscircle-->
     <link rel="stylesheet" href="node_modules/@spectrum-css/progresscircle/dist/index-vars.css">
 
     <link rel="stylesheet" href="./style.css">
 
+    <!--ICONS-->
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-url="img/spectrum-icons.svg"
          style="display: none;">
         <symbol id="spectrum-icon-18-More" viewBox="0 0 36 36">
@@ -56,13 +54,15 @@
             <circle cx="29.5" cy="18.2" r="3.8"></circle>
             <circle cx="6.1" cy="18.2" r="3.68"></circle>
         </symbol>
+        <symbol id="spectrum-icon-18-Alert" viewBox="0 0 36 36"><path d="M17.127 2.579L.4 32.512A1 1 0 001.272 34h33.456a1 1 0 00.872-1.488L18.873 2.579a1 1 0 00-1.746 0zM20 29.5a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5h3a.5.5 0 01.5.5zm0-6a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-12a.5.5 0 01.5-.5h3a.5.5 0 01.5.5z"></path></symbol>
     </svg>
+
 </head>
 <body>
 <div class="app">
-    <div class="spectrum-SplitView spectrum-SplitView--horizontal" style="height: fit-content; display: flex;
+    <div class="spectrum-SplitView spectrum-SplitView--horizontal m" style="height: fit-content; display: flex;
     align-items: center">
-        <div class="spectrum-SplitView-pane" style="width: 6rem">
+        <div class="spectrum-SplitView-pane" style="width: 9rem">
             <button class="spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet"
                     id="more-btn">
                 <svg class="spectrum-Icon spectrum-Icon--sizeM" focusable="false" aria-hidden="true">
@@ -79,7 +79,7 @@
         </div>
         <div class="spectrum-SplitView-splitter"></div>
         <div class="spectrum-SplitView-pane" style="flex: 1">
-            <div class="spectrum-Examples-item" style="display: flex; align-items: center;">
+            <div class="spectrum-Examples-item" style="display: flex;">
                 <div class="infoGroup" style="display: flex; flex-direction: column; align-items: flex-start">
                     <h3 class="spectrum-Heading spectrum-Heading--sizeXS spectrum-Examples-itemHeading"
                         id="displayName" style="margin-right: .5rem"></h3>
@@ -103,38 +103,40 @@
 <div class="block-total" style="width: fit-content; margin: 0 auto">
     <div class="spectrum-SplitView spectrum-SplitView--horizontal" style="height: fit-content; align-items: center;
      margin-top: 2rem; margin-bottom: 2rem">
-        <div class="spectrum-SplitView-pane" style="width: 6rem">
+        <div class="spectrum-SplitView-pane" style="width: 7rem">
             <p class="spectrum-Detail spectrum-Detail--sizeXL">Total:</p>
         </div>
-        <div class="spectrum-SplitView-splitter"></div>
-        <div class="spectrum-SplitView-pane" style="flex: 1; width: 1rem">
-            <p class="spectrum-Body spectrum-Body--sizeM" id="count"></p>
-        </div>
 
-        <!--loader-->
-        <div class="spectrum-ProgressCircle spectrum-ProgressCircle--indeterminate spectrum-ProgressCircle--small"
-             id="loader">
-            <div class="spectrum-ProgressCircle-track"></div>
-            <div class="spectrum-ProgressCircle-fills">
-                <div class="spectrum-ProgressCircle-fillMask1">
-                    <div class="spectrum-ProgressCircle-fillSubMask1">
-                        <div class="spectrum-ProgressCircle-fill"></div>
+
+        <div class="spectrum-SplitView-splitter"></div>
+        <div class="spectrum-SplitView-pane" style="flex: 1; width: 3rem">
+            <!--loader-->
+            <div class="spectrum-ProgressCircle spectrum-ProgressCircle--indeterminate spectrum-ProgressCircle--small"
+                 id="loader">
+                <div class="spectrum-ProgressCircle-track"></div>
+                <div class="spectrum-ProgressCircle-fills">
+                    <div class="spectrum-ProgressCircle-fillMask1">
+                        <div class="spectrum-ProgressCircle-fillSubMask1">
+                            <div class="spectrum-ProgressCircle-fill"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="spectrum-ProgressCircle-fillMask2">
-                    <div class="spectrum-ProgressCircle-fillSubMask2">
-                        <div class="spectrum-ProgressCircle-fill"></div>
+                    <div class="spectrum-ProgressCircle-fillMask2">
+                        <div class="spectrum-ProgressCircle-fillSubMask2">
+                            <div class="spectrum-ProgressCircle-fill"></div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <p class="spectrum-Body spectrum-Body--sizeM" id="count"></p>
         </div>
+
 
     </div>
 </div>
 
 
-<div class="spectrum-SplitView spectrum-SplitView--horizontal" style="height: fit-content; display: flex">
-    <div class="spectrum-SplitView-pane aligner" style="width: 10rem; vertical-align: center">
+<div class="spectrum-SplitView spectrum-SplitView--horizontal" style="height: fit-content; display: flex; justify-content: center;">
+    <div class="spectrum-SplitView-pane aligner" style="width: 10rem; vertical-align: center;">
         <div style="margin-bottom: 1rem">
             <p class="spectrum-Body spectrum-Body--sizeM">On/off parser</p>
         </div>
@@ -143,17 +145,6 @@
             <input type="checkbox" class="checkbox" id="toggleStart">
             <div class="knobs"></div>
             <div class="layer"></div>
-        </div>
-    </div>
-    <div class="spectrum-SplitView-splitter"></div>
-    <div class="spectrum-SplitView-pane aligner" style="flex: 1">
-        <div style="margin-bottom: 1rem">
-            <p class="spectrum-Body spectrum-Body--sizeM">Export links</p>
-        </div>
-        <div class="spectrum-SplitView-pane" style="width: 6rem">
-            <button class="spectrum-Button spectrum-Button--secondary spectrum-Button--sizeM" disabled>
-                <span class="spectrum-Button-label" id="export">Export</span>
-            </button>
         </div>
     </div>
 </div>
@@ -166,10 +157,16 @@
             link(s)
         </strong>
     </h3>
-    <div class="notifs">
-        <p style="color: orangered"></p>
+    <div class="spectrum-Examples-item" id="error-alert">
+        <div class="spectrum-HelpText spectrum-HelpText--sizeM spectrum-HelpText--negative">
+            <svg class="spectrum-Icon spectrum-Icon--sizeM spectrum-HelpText-validationIcon" focusable="false"
+                 aria-hidden="true">
+                <use xlink:href="#spectrum-icon-18-Alert"/>
+            </svg>
+            <div class="spectrum-HelpText-text">Cannot start parsing. Facebook tab is not opened!</div>
+        </div>
     </div>
-</div>
+
 </div>
 <script src="app.js" defer></script>
 </body>

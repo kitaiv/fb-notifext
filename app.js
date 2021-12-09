@@ -36,7 +36,6 @@ if (window.location.href === baseAppUrl + 'main.html') {
 const output = document.querySelector('#count'),
     collectedLinksAmount = document.querySelector('h3>strong>mark'),
     collectedLinksWrapper = document.querySelector('strong'),
-    exportButton = document.querySelector('#export'),
     toggleStart = document.querySelector('#toggleStart');
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
@@ -137,6 +136,7 @@ function getLinks(){
 
 getLinks()
 
+
 //Sending links to the database
 function sendLinks(links = {}) {
     const parsedToObj = JSON.parse(links)
@@ -190,7 +190,9 @@ function toggleParser(isStarted) {
     }
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
+    changeStatus('error-alert', 'none')
     toggleStart.addEventListener('click', e => {
         const toggler = e.target;
         //Parser has been started
@@ -200,11 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.data.length < 1) {
                     //facebook notification tab is NOT opened
                     toggler.checked = false
-                    document.querySelector('.notifs>p').textContent = ''
+                    changeStatus('error-alert', 'none')
                     setTimeout(() => {
-                        document.querySelector('.notifs>p').textContent = 'Cannot start parsing. Facebook' +
-                            ' notifications' +
-                            ' tab is not opened!'
+                        changeStatus('error-alert', 'block')
                     }, 500)
                 }else {
                     //facebook notification tab is opened
@@ -216,7 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     loaded(false)
                     //this function is used in the specific app with it was started on, not in your chrome extension popup
                     toggleParser(true)
-                    exportButton.style.cursor = 'not-allowed'
                     chrome.runtime.sendMessage({message: 'on'})
                 }
             })
@@ -236,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             loaded(true)
             toggleParser(false)
-            exportButton.style.cursor = 'pointer'
 
             return false
         }
