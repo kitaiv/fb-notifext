@@ -1,11 +1,5 @@
 'use strict'
 
-//https://www.facebook.com/NovitalsAU/videos/266031965575071/
-//transform FROM:
-//https://www.facebook.com/NovitalsAU/videos/266031965575071/?notif_id=1637655624284971&notif_t=live_video&ref=notif
-//transform TO:
-//https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2FNovitalsAU%2Fvideos%2F266031965575071%2F&show_text=false&width=560&t=0
-
 const extId = chrome.runtime.id
 const baseAppUrl = `chrome-extension://${extId}/`
 
@@ -47,10 +41,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 });
 
-const changeStatus = (itemId, property) => {
-    const item = document.querySelector(`#${itemId}`)
-    item.style.display = property
-}
+const changeStatus = (itemId, property) => document.querySelector(`#${itemId}`).style.display = property
+
 const loaded = isLoaded => {
     if (isLoaded) {
         output.style.display = 'inline'
@@ -64,7 +56,7 @@ const loaded = isLoaded => {
 }
 
 
-//this function could be useful because it gets a video code to compare from parsed links
+//this function could be useful because it gets a video code
 const getVideoCode = (link = '') => link.split("?")[1].split("&")[1].split("%")[6].slice(2)
 
 const data =
@@ -78,7 +70,6 @@ if (user) {
 
 chrome.storage.sync.get(['isParserStarted'], result => {
     if (result.isParserStarted) {
-
         loaded(false)
         collectedLinksAmount.textContent = Object.values(JSON.parse(localStorage.links)).length
         changeStatus('inactive', 'none')
@@ -169,7 +160,7 @@ function toggleParser(isStarted) {
         if(localStorage.links === null || undefined){
             throw new Error('no such item in Local Storage!')
         }else{
-            let localLinksToObj = async () => JSON.parse(localStorage.links);
+            let localLinksToObj = async () => JSON.parse(localStorage.links)
             localLinksToObj().then(result => {
                 if(Object.values(result).length < 1){
                     return false
@@ -193,6 +184,7 @@ function toggleParser(isStarted) {
 
 document.addEventListener('DOMContentLoaded', () => {
     changeStatus('error-alert', 'none')
+    localStorage.excelLinks = JSON.stringify([])
     toggleStart.addEventListener('click', e => {
         const toggler = e.target;
         //Parser has been started
@@ -220,12 +212,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
 
-            //Background script
-            return true
+            return true;
         }
         //Parser has been stopped
         else {
-            //should add some logic here
+            //have to add some logic here
             chrome.storage.sync.set({isParserStarted: false})
             changeStatus('inactive', 'block')
             changeStatus('active', 'none')
@@ -236,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loaded(true)
             toggleParser(false)
 
-            return false
+            return false;
         }
     })
 })

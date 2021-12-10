@@ -14,7 +14,6 @@ chrome.runtime.onInstalled.addListener(details => {
             break
         case chrome.runtime.OnInstalledReason.UPDATE:
             notifyOnce = 0
-            localStorage.excelLinks = JSON.stringify([])
             break
         default:
             console.log('[onInstalled] default')
@@ -35,9 +34,8 @@ Array.prototype.diff = function (a) {
     return this.filter(i => a.indexOf(i) < 0)
 }
 
-//https://script.google.com/macros/s/AKfycbxgAP8oWlbgdLp_04c9B181PhAeT-jkSgB2Hl51Ag/exec?link=awd
-
 //Sending links to Excel
+
 function sendLinksToExcel(links = []) {
     if (links.length < 1) {
         return true
@@ -56,7 +54,7 @@ function sendLinksToExcel(links = []) {
 
         links.forEach(el => {
             let link = el.replaceAll('&', '%26')
-            fetch(`https://script.google.com/macros/s/AKfycbxgAP8oWlbgdLp_04c9B181PhAeT-jkSgB2Hl51Ag/exec?links=${link}`, requestOptions)
+            fetch(`https://script.google.com/macros/s/AKfycbzJm6sJ22XkvLM2CLRnliJBS4Xzp7NJCP4lOXFEyJiSLpBUspr3/exec?links=${link}`, requestOptions)
                 .then(response => response.text())
                 .then(result => console.log(result))
                 .catch(error => console.log('Error\n', error));
@@ -78,7 +76,6 @@ pingParser = setInterval(() => {
                             chrome.browserAction.setBadgeText({text: ''})
                             chrome.browserAction.setBadgeBackgroundColor({color: '#0000'})
                             chrome.storage.sync.set({isParserStarted: false})
-                            console.log('tab has been closed')
                             return true
                         } else {
                             chrome.tabs.executeScript(result[0].id, {
@@ -88,22 +85,23 @@ pingParser = setInterval(() => {
                                     Object.assign({}, liveVideoLinkParse(results[0]))
                                 )
 
-                                //transform localstorage links to Array
-                                const _lslToArr = Object.assign([], JSON.parse(localStorage.links))
-                                const _lselToArr = Object.assign([], JSON.parse(localStorage.excelLinks))
-                                ////////////////////////////////////////
+                                try {
 
-                                try{
-                                    if(_lselToArr.length < 1){
+                                    //transform localstorage links to Array
+                                    const _lslToArr = Object.assign([], JSON.parse(localStorage.links))
+                                    const _lselToArr = Object.assign([], JSON.parse(localStorage.excelLinks))
+                                    ////////////////////////////////////////
+
+                                    if (_lselToArr.length < 1) {
                                         sendLinksToExcel(_lslToArr)
                                         localStorage.excelLinks = JSON.stringify(_lslToArr)
                                         return true
-                                    }else{
+                                    } else {
                                         sendLinksToExcel(_lslToArr.diff(_lselToArr))
                                         return false
                                     }
-                                } catch(err){
-                                    throw new Error('Error occurred: ', err)
+                                } catch(e){
+                                    throw new Error(e)
                                 }
                             })
                         }
@@ -122,7 +120,6 @@ function liveVideoLinkParse(linksArr = []) {
     let newArr = linksArr.map(l => l.includes("live_video") ? l : null).filter(el => el != null)
     const linksFromDB = JSON.parse(localStorage.linksFromDatabase)
     if (newArr.length < 1) {
-        console.log('no links to parse')
         return []
     } else {
         const transformatedLinks = newArr.map((_l) => {
@@ -133,15 +130,9 @@ function liveVideoLinkParse(linksArr = []) {
 
                 return `https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2F${channelName}%2Fvideos%2F${videoCode}%2F&show_text=false&width=560&t=0`
             } else {
-                console.log("null")
                 return null
             }
         })
-        // if (transformatedLinks.diff(linksFromDB).length < 1) {
-        //     console.log('no available links to parse...')
-        // } else {
-        //     console.log('the are new links to parse...')
-        // }
         return transformatedLinks.diff(linksFromDB)
     }
 
