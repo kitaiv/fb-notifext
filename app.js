@@ -3,10 +3,12 @@
 const extId = chrome.runtime.id
 const baseAppUrl = `chrome-extension://${extId}/`
 
+
 if (window.location.href === baseAppUrl + 'main.html') {
-    const active = document.querySelector('#active')
     const popover = document.querySelector('#show-popover')
-    active.style.display = 'none';
+    changeStatus({
+        'active': 'none'
+    })
     document.querySelector('#more-btn').addEventListener('click', e => {
         if (popover.classList.contains('is-open')) {
             popover.classList.remove('is-open')
@@ -29,7 +31,6 @@ if (window.location.href === baseAppUrl + 'main.html') {
 
 const output = document.querySelector('#count'),
     collectedLinksAmount = document.querySelector('h3>strong>mark'),
-    collectedLinksWrapper = document.querySelector('strong'),
     toggleStart = document.querySelector('#toggleStart');
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
@@ -40,18 +41,19 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         sendResponse(document.innerHTML);
     }
 });
-
-const changeStatus = (itemId, property) => document.querySelector(`#${itemId}`).style.display = property
-
-const loaded = isLoaded => {
+function loaded(isLoaded){
     if (isLoaded) {
-        output.style.display = 'inline'
-        collectedLinksWrapper.style.display = 'none'
-        changeStatus('loader', 'none')
+        changeStatus({
+            'count': 'inline',
+            'collectedLinksWrapper': 'none',
+            'loader': 'none'
+        })
     } else {
-        output.style.display = 'none'
-        collectedLinksWrapper.style.display = 'inline'
-        changeStatus('loader', 'block')
+        changeStatus({
+            'count': 'none',
+            'collectedLinksWrapper': 'inline',
+            'loader': 'block'
+        })
     }
 }
 
@@ -72,14 +74,18 @@ chrome.storage.sync.get(['isParserStarted'], result => {
     if (result.isParserStarted) {
         loaded(false)
         collectedLinksAmount.textContent = Object.values(JSON.parse(localStorage.links)).length
-        changeStatus('inactive', 'none')
-        changeStatus('active', 'block')
+        changeStatus({
+            'inactive': 'none',
+            'active': 'block'
+        })
         toggleStart.checked = true
     } else {
 
         loaded(true)
-        changeStatus('inactive', 'block')
-        changeStatus('active', 'none')
+        changeStatus({
+            'inactive': 'block',
+            'active': 'none'
+        })
         toggleStart.checked = false
     }
 })
@@ -181,9 +187,22 @@ function toggleParser(isStarted) {
     }
 }
 
+function changeStatus(obj){
+    if(!obj) return true;
+    try {
+        for( let key in obj){
+            document.querySelector(`#${key}`).style.display = obj[key]
+        }
+    }catch (e) {
+        console.warn(e)
+    }
+
+}
 
 document.addEventListener('DOMContentLoaded', () => {
-    changeStatus('error-alert', 'none')
+    changeStatus({
+        'error-alert': 'none'
+    })
     localStorage.excelLinks = JSON.stringify([])
     toggleStart.addEventListener('click', e => {
         const toggler = e.target;
@@ -194,16 +213,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.data.length < 1) {
                     //facebook notification tab is NOT opened
                     toggler.checked = false
-                    changeStatus('error-alert', 'none')
+                    changeStatus({
+                        'error-alert': 'none'
+                    })
                     setTimeout(() => {
-                        changeStatus('error-alert', 'block')
+                        changeStatus({
+                            'error-alert': 'block'
+                        })
                     }, 500)
                 }else {
                     //facebook notification tab is opened
-                    changeStatus('active', 'block')
-                    changeStatus('inactive', 'none')
-                    changeStatus('loader', 'block')
-
+                    changeStatus({
+                        'active': 'block',
+                        'inactive': 'none',
+                        'loader': 'block'
+                    })
                     chrome.storage.sync.set({isParserStarted: true})
                     loaded(false)
                     //this function is used in the specific app with it was started on, not in your chrome extension popup
@@ -218,10 +242,11 @@ document.addEventListener('DOMContentLoaded', () => {
         else {
             //have to add some logic here
             chrome.storage.sync.set({isParserStarted: false})
-            changeStatus('inactive', 'block')
-            changeStatus('active', 'none')
-            changeStatus('loader', 'none')
-
+            changeStatus({
+                'inactive': 'block',
+                'active': 'none',
+                'loader': 'none'
+            })
             chrome.runtime.sendMessage({message: 'off'})
 
             loaded(true)
