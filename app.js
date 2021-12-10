@@ -80,7 +80,6 @@ chrome.storage.sync.get(['isParserStarted'], result => {
         })
         toggleStart.checked = true
     } else {
-
         loaded(true)
         changeStatus({
             'inactive': 'block',
@@ -188,7 +187,7 @@ function toggleParser(isStarted) {
 }
 
 function changeStatus(obj){
-    if(!obj) return true;
+    if(!obj) return false;
     try {
         for( let key in obj){
             document.querySelector(`#${key}`).style.display = obj[key]

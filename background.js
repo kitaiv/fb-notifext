@@ -1,4 +1,4 @@
-let isUserAuthorized = true;
+let isUserAuthorized = false;
 
 // Regex-pattern to check URLs against.
 // It matches URLs like: http[s]://[...]facebook.com[...]
