@@ -16,7 +16,7 @@ chrome extension for parsing live video links from facebook
 
 ![3](https://ibb.co/R7SL4qP)
 
-######watch here (https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+######[watch here](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 
 >Step 2
 
