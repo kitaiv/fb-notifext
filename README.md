@@ -40,6 +40,6 @@ command in your console to download all the dependencies
 Add extension directory to chrome
 
 - https://ibb.co/M9PxRcS
-- ttps://ibb.co/1T6hW45
+- https://ibb.co/1T6hW45
 
 #That's it enjoy it!
