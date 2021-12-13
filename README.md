@@ -13,7 +13,7 @@ chrome extension for parsing live video links from facebook
 - https://ibb.co/mTh4P53
 - https://ibb.co/HVkp5fj
 
-##OR
+## OR
 
 - https://ibb.co/R7SL4qP
 
