@@ -10,12 +10,12 @@ chrome extension for parsing live video links from facebook
 
 ##Clone this repository or download it as ZIP file
 
--https://ibb.co/mTh4P53
--https://ibb.co/HVkp5fj
+- https://ibb.co/mTh4P53
+- https://ibb.co/HVkp5fj
 
 ##OR
 
--https://ibb.co/R7SL4qP
+- https://ibb.co/R7SL4qP
 
 ######[watch here](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 
@@ -29,9 +29,9 @@ npm i
 
 command in your console to download all the dependencies
 
--https://ibb.co/ZJmpyh4
--https://ibb.co/q5Lj02L
--https://ibb.co/tqRzY8S
+- https://ibb.co/ZJmpyh4
+- https://ibb.co/q5Lj02L
+- https://ibb.co/tqRzY8S
 
 ######downloading dependencies could take a bit longer in your case
 
@@ -39,7 +39,7 @@ command in your console to download all the dependencies
 
 Add extension directory to chrome
 
--https://ibb.co/M9PxRcS
--https://ibb.co/1T6hW45
+- https://ibb.co/M9PxRcS
+- ttps://ibb.co/1T6hW45
 
 #That's it enjoy it!
