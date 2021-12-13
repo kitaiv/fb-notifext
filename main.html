@@ -44,6 +44,9 @@
     <!--progresscircle-->
     <link rel="stylesheet" href="node_modules/@spectrum-css/progresscircle/dist/index-vars.css">
 
+    <!--taggroup-->
+    <link rel="stylesheet" href="node_modules/@spectrum-css/taggroup/dist/index-vars.css">
+
     <link rel="stylesheet" href="./style.css">
 
     <!--ICONS-->
@@ -149,14 +152,21 @@
     </div>
 </div>
 
-<div class="control-container">
-    <h3>
-        <strong id="collectedLinksWrapper">
-            collected links: +
-            <mark>0</mark>
-            link(s)
-        </strong>
-    </h3>
+<div class="control-container" style="display: flex; justify-content: center">
+    <div class="spectrum-TagGroup" role="list" aria-label="list" id="collectedLinksWrapper"
+    style="
+        border: 1px solid red;
+        border-radius: 0.5rem;
+        color: red;
+        font-weight: bold;
+        font-size: .9rem;
+    "
+    >
+        <div class="spectrum-Tag spectrum-Tag--sizeS spectrum-TagGroup-item is-invalid" role="listitem">
+            collected links + <span class="spectrum-Tag-label" id="added">0</span>
+        </div>
+    </div>
+
     <div class="spectrum-Examples-item" id="error-alert">
         <div class="spectrum-HelpText spectrum-HelpText--sizeM spectrum-HelpText--negative">
             <svg class="spectrum-Icon spectrum-Icon--sizeM spectrum-HelpText-validationIcon" focusable="false"

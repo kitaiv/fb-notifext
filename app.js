@@ -9,6 +9,14 @@ if (window.location.href === baseAppUrl + 'main.html') {
     changeStatus({
         'active': 'none'
     })
+    document.addEventListener('click', e => {
+        if(e.target.id === 'more-btn' || e.target.classList.contains('is-open')){
+            return true
+        }else{
+            popover.classList.remove('is-open')
+            e.stopPropagation()
+        }
+    })
     document.querySelector('#more-btn').addEventListener('click', e => {
         if (popover.classList.contains('is-open')) {
             popover.classList.remove('is-open')
@@ -30,17 +38,9 @@ if (window.location.href === baseAppUrl + 'main.html') {
 }
 
 const output = document.querySelector('#count'),
-    collectedLinksAmount = document.querySelector('h3>strong>mark'),
+    collectedLinksAmount = document.querySelector('#added'),
     toggleStart = document.querySelector('#toggleStart');
 
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    // If the received message has the expected format...
-    if (msg.text === 'report_back') {
-        // Call the specified callback, passing
-        // the web-page's DOM content as argument
-        sendResponse(document.innerHTML);
-    }
-});
 function loaded(isLoaded){
     if (isLoaded) {
         changeStatus({
@@ -51,9 +51,25 @@ function loaded(isLoaded){
     } else {
         changeStatus({
             'count': 'none',
-            'collectedLinksWrapper': 'inline',
+            'collectedLinksWrapper': 'inline-block',
             'loader': 'block'
         })
+    }
+}
+
+function totalLoaded(isLoaded){
+    if(isLoaded){
+        changeStatus({
+            'count': 'inline',
+            'loader': 'none'
+        })
+        toggleStart.removeAttribute('disabled')
+    }else{
+        changeStatus({
+            'count': 'none',
+            'loader': 'block'
+        })
+        toggleStart.setAttribute('disabled', '')
     }
 }
 
@@ -95,33 +111,27 @@ function getLinks(){
         if(result.isParserStarted){
             return true
         }else{
-            fetch("https://fb-notifext-3878d-default-rtdb.europe-west1.firebasedatabase.app/links.json", {
+            totalLoaded(false)
+            const url = "https://script.google.com/macros/s/AKfycbwYfeFIu2cBxmRnbsGmEnV2WUrr6R2Z4jMbLpMfyMhw9l6vEZnZJnbAAVLjkN0nsPvuJg/exec?links"
+            fetch(url, {
                 method: 'GET',
                 redirect: 'follow'
             })
                 .then(response => response.json())
                 .then(result => {
-                    let newArr = []
-                    for(const property in result){
-                        let tr = typeof result[property].href === 'string' ? JSON.parse(result[property].href) : result[property].href
-                        if(Array.isArray(tr) || Object.values(tr).length > 1){
-                            //if array transform here
-                            tr.forEach(_ll => {
-                                newArr.push(_ll)
-                            })
-                        }else{
-                            //if not array return link
-                            newArr.push(JSON.parse(result[property].href)[0])
-                        }
-                    }
-                    if(newArr.length > 0){
-                        loaded(true)
-                        localStorage.linksFromDatabase = JSON.stringify(newArr)
-                        output.textContent = JSON.stringify(newArr.length)
+                    let {data} = result
+                    return data.filter(el => el !== "")
+                })
+                .then(filterData => {
+                    if(filterData.length > 0){
+                        localStorage.linksFromExcel = JSON.stringify(filterData)
+                        output.textContent = JSON.stringify(filterData.length)
+                        totalLoaded(true)
                     }else{
                         output.textContent = "0"
-                        localStorage.linksFromDatabase = JSON.stringify([]);
+                        localStorage.linksFromExcel = JSON.stringify([]);
                         console.log('no links in database')
+                        totalLoaded(true)
                         return true
                     }
                 })
@@ -132,27 +142,6 @@ function getLinks(){
 
 getLinks()
 
-
-//Sending links to the database
-function sendLinks(links = {}) {
-    const parsedToObj = JSON.parse(links)
-    const data = JSON.stringify({
-        href: parsedToObj
-    })
-    if (Object.values(parsedToObj).length < 1) {
-        console.warn("Links hasn't been sent cause no links were collected")
-        return true
-    } else {
-        fetch('https://fb-notifext-3878d-default-rtdb.europe-west1.firebasedatabase.app/links.json', {
-            method: 'POST',
-            redirect: 'follow',
-            body: data
-        })
-            .then(response => response)
-            .then(result => getLinks())
-            .catch(err => console.error(err))
-    }
-}
 
 let pingParser;
 
@@ -165,12 +154,12 @@ function toggleParser(isStarted) {
         if(localStorage.links === null || undefined){
             throw new Error('no such item in Local Storage!')
         }else{
+            localStorage.draft = JSON.stringify([])
             let localLinksToObj = async () => JSON.parse(localStorage.links)
             localLinksToObj().then(result => {
                 if(Object.values(result).length < 1){
                     return false
                 }else{
-                    sendLinks(localStorage.links)
                     localStorage.links = JSON.stringify({})
                     collectedLinksAmount.textContent = '0'
                     return true
@@ -181,11 +170,11 @@ function toggleParser(isStarted) {
 
         clearInterval(pingParser)
         getLinks()
-        console.log('parser has been stopped...')
         return true
     }
 }
 
+//flexible function that changes visibility of specific element that was provided in object callback by Id
 function changeStatus(obj){
     if(!obj) return false;
     try {
@@ -202,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
     changeStatus({
         'error-alert': 'none'
     })
-    localStorage.excelLinks = JSON.stringify([])
     toggleStart.addEventListener('click', e => {
         const toggler = e.target;
         //Parser has been started
@@ -220,6 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             'error-alert': 'block'
                         })
                     }, 500)
+                    return true
                 }else {
                     //facebook notification tab is opened
                     changeStatus({
@@ -232,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     //this function is used in the specific app with it was started on, not in your chrome extension popup
                     toggleParser(true)
                     chrome.runtime.sendMessage({message: 'on'})
+                    return false
                 }
             })
 
@@ -240,17 +230,19 @@ document.addEventListener('DOMContentLoaded', () => {
         //Parser has been stopped
         else {
             //have to add some logic here
-            chrome.storage.sync.set({isParserStarted: false})
-            changeStatus({
-                'inactive': 'block',
-                'active': 'none',
-                'loader': 'none'
-            })
-            chrome.runtime.sendMessage({message: 'off'})
-
-            loaded(true)
-            toggleParser(false)
-
+            try{
+                chrome.storage.sync.set({isParserStarted: false})
+                changeStatus({
+                    'inactive': 'block',
+                    'active': 'none',
+                    'loader': 'none'
+                })
+                chrome.runtime.sendMessage({message: 'off'})
+                loaded(true)
+                toggleParser(false)
+            }catch (e) {
+                throw new Error(e)
+            }
             return false;
         }
     })
