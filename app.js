@@ -21,6 +21,7 @@ if (window.location.href === baseAppUrl + 'main.html') {
         if (popover.classList.contains('is-open')) {
             popover.classList.remove('is-open')
             e.stopPropagation()
+            e.preventDefault()
         } else {
             popover.classList.add('is-open')
         }

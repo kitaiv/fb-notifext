@@ -61,6 +61,7 @@ function sendLinksToExcel(links = []) {
                 .then(result => console.log('sending links...'))
                 .catch(error => console.log('Error\n', error));
         })
+
     }
 
 }
@@ -84,26 +85,32 @@ pingParser = setInterval(() => {
                             chrome.tabs.executeScript(result[0].id, {
                                 code: '(' + modifyDOM + ')();'
                             }, results => {
-                                localStorage.links = JSON.stringify(
-                                    Object.assign({}, liveVideoLinkParse(results[0]))
-                                )
 
-                                try {
-                                    const _lslToArr = Object.assign([], JSON.parse(localStorage.links))
-                                    let _draft = Object.assign([], JSON.parse(localStorage.draft))
+                                void async function () {
+                                    localStorage.links = JSON.stringify(
+                                        Object.assign({}, liveVideoLinkParse(results[0]))
+                                    )
+                                }().then(() => {
+                                    try {
+                                        const _lslToArr = Object.assign([], JSON.parse(localStorage.links))
+                                        let _draft = Object.assign([], JSON.parse(localStorage.draft))
 
-                                    if (_draft.length < 1) {
-                                        void async function(){
-                                            localStorage.draft = JSON.stringify(_lslToArr)
-                                        }().then(() => sendLinksToExcel(_lslToArr))
-                                        return true
-                                    } else {
-                                        sendLinksToExcel(_lslToArr.diff(_draft))
-                                        return false
+                                        if (_draft.length < 1) {
+                                            void async function () {
+                                                localStorage.draft = JSON.stringify(_lslToArr)
+                                            }().then(() => sendLinksToExcel(_lslToArr))
+                                            console.log('(_lslToArr\n', _lslToArr)
+                                            return true
+                                        } else {
+                                            console.log("sendLinksToExcel(_lslToArr.diff(_draft))\n", _lslToArr.diff(_draft))
+                                            sendLinksToExcel(_lslToArr.diff(_draft))
+                                            return false
+                                        }
+                                    } catch (e) {
+                                        throw new Error(e)
                                     }
-                                } catch(e){
-                                    throw new Error(e)
-                                }
+                                })
+
                             })
                         }
                     } catch (err) {
