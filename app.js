@@ -113,30 +113,39 @@ function getLinks(){
             return true
         }else{
             totalLoaded(false)
-            const url = "https://script.google.com/macros/s/AKfycbwYfeFIu2cBxmRnbsGmEnV2WUrr6R2Z4jMbLpMfyMhw9l6vEZnZJnbAAVLjkN0nsPvuJg/exec?links"
-            fetch(url, {
-                method: 'GET',
-                redirect: 'follow'
-            })
-                .then(response => response.json())
-                .then(result => {
-                    let {data} = result
-                    return data.filter(el => el !== "")
+            const url = "https://script.google.com/macros/s/AKfycbwNRE8IbRAFCotJv5JNazTzhv0fbXUC0ghyRGqcljCiS8xwjQtnq6ftTUQp4MV5KDtPbw/exec?links"
+            try{
+                fetch(url, {
+                    method: 'GET',
+                    redirect: 'follow'
                 })
-                .then(filterData => {
-                    if(filterData.length > 0){
-                        localStorage.linksFromExcel = JSON.stringify(filterData)
-                        output.textContent = JSON.stringify(filterData.length)
-                        totalLoaded(true)
-                    }else{
-                        output.textContent = "0"
-                        localStorage.linksFromExcel = JSON.stringify([]);
-                        console.log('no links in database')
-                        totalLoaded(true)
-                        return true
-                    }
-                })
-                .catch(err => console.log(err))
+                    .then(response => response.json())
+                    .then(result => {
+                        let {data} = result
+                        return data.filter(el => el !== "")
+                    })
+                    .then(filterData => {
+                        const fdl = filterData.length
+                        if(fdl > 0){
+                            // if(fdl < 500) {
+                            //     localStorage.linksFromExcel = JSON.stringify(filterData)
+                            // }else{
+                            //     localStorage.linksFromExcel ? localStorage.removeItem(linksFromExcel) : null
+                            // }
+                            output.textContent = new Intl.NumberFormat('en-IN').format(fdl)
+                            totalLoaded(true)
+                        }else{
+                            output.textContent = "0"
+                            // localStorage.linksFromExcel = JSON.stringify([]);
+                            console.log('no links in database')
+                            totalLoaded(true)
+                            return true
+                        }
+                    })
+                    .catch(err => console.log(err))
+            }catch(err){
+                console.warn(err)
+            }
         }
     })
 }
@@ -248,5 +257,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 })
-
-

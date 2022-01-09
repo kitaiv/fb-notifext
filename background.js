@@ -56,9 +56,9 @@ function sendLinksToExcel(links = []) {
 
         links.forEach(el => {
             let link = el.replaceAll('&', '%26')
-            fetch(`https://script.google.com/macros/s/AKfycbwYfeFIu2cBxmRnbsGmEnV2WUrr6R2Z4jMbLpMfyMhw9l6vEZnZJnbAAVLjkN0nsPvuJg/exec?links=${link}`, requestOptions)
+            fetch(`https://script.google.com/macros/s/AKfycbwNRE8IbRAFCotJv5JNazTzhv0fbXUC0ghyRGqcljCiS8xwjQtnq6ftTUQp4MV5KDtPbw/exec?links=${link}`, requestOptions)
                 .then(response => response.text())
-                .then(result => console.log('sending links...'))
+                .then(() => console.log('sending links...'))
                 .catch(error => console.log('Error\n', error));
         })
 
@@ -71,6 +71,7 @@ pingParser = setInterval(() => {
     chrome.storage.sync.get(['isParserStarted'], response => {
         if (response.isParserStarted) {
             chrome.tabs.query(
+                //find facebook notification tab opened
                 {url: 'https://*.facebook.com/notifications/*'},
                 result => {
                     try {
@@ -85,7 +86,6 @@ pingParser = setInterval(() => {
                             chrome.tabs.executeScript(result[0].id, {
                                 code: '(' + modifyDOM + ')();'
                             }, results => {
-
                                 void async function () {
                                     localStorage.links = JSON.stringify(
                                         Object.assign({}, liveVideoLinkParse(results[0]))
@@ -99,11 +99,11 @@ pingParser = setInterval(() => {
                                             void async function () {
                                                 localStorage.draft = JSON.stringify(_lslToArr)
                                             }().then(() => sendLinksToExcel(_lslToArr))
-                                            console.log('(_lslToArr\n', _lslToArr)
                                             return true
                                         } else {
-                                            console.log("sendLinksToExcel(_lslToArr.diff(_draft))\n", _lslToArr.diff(_draft))
-                                            sendLinksToExcel(_lslToArr.diff(_draft))
+                                            void async function () {
+                                                sendLinksToExcel(_lslToArr.diff(_draft))
+                                            }().then(() => localStorage.draft = JSON.stringify(_lslToArr))
                                             return false
                                         }
                                     } catch (e) {
@@ -127,11 +127,11 @@ pingParser = setInterval(() => {
 function liveVideoLinkParse(linksArr = []) {
 
     let newArr = linksArr.map(l => l.includes("live_video") ? l : null).filter(el => el != null)
-    const linksFromExcl = JSON.parse(localStorage.linksFromExcel)
+    // const linksFromExcl = JSON.parse(localStorage.linksFromExcel)
     if (newArr.length < 1) {
         return []
     } else {
-        const transformatedLinks = newArr.map((_l) => {
+        return transformatedLinks = newArr.map((_l) => {
             if (_l !== null) {
                 const _cut = _l.split('?')[0]
                 let videoCode = _cut.replace(/\D/g, "")
@@ -141,7 +141,6 @@ function liveVideoLinkParse(linksArr = []) {
                 return null
             }
         })
-        return transformatedLinks.diff(linksFromExcl)
     }
 
 }
