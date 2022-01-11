@@ -65,7 +65,7 @@
 <div class="app">
     <div class="spectrum-SplitView spectrum-SplitView--horizontal m" style="height: fit-content; display: flex;
     align-items: center">
-        <div class="spectrum-SplitView-pane" style="width: 9rem">
+        <div class="spectrum-SplitView-pane" style="width: 9rem;">
             <button class="spectrum-ActionButton spectrum-ActionButton--sizeM spectrum-ActionButton--quiet"
                     id="more-btn">
                 <svg class="spectrum-Icon spectrum-Icon--sizeM" focusable="false" aria-hidden="true">
@@ -76,6 +76,9 @@
                 <ul class="spectrum-Menu" role="menu">
                     <li class="spectrum-Menu-item" role="menuitem" tabindex="0" id="logout">
                         <span class="spectrum-Menu-itemLabel">Logout</span>
+                    </li>
+                    <li class="spectrum-Menu-item" role="menuitem" tabindex="0" id="refresh">
+                        <span class="spectrum-Menu-itemLabel">Refresh</span>
                     </li>
                 </ul>
             </div>
@@ -99,85 +102,87 @@
                 </div>
             </div>
         </div>
+
     </div>
-</div>
-
-<!--TOTAL COUNT-->
-<div class="block-total" style="width: fit-content; margin: 0 auto">
-    <div class="spectrum-SplitView spectrum-SplitView--horizontal" style="height: fit-content; align-items: center;
+    <!--TOTAL COUNT-->
+    <div class="block-total" style="width: fit-content; margin: 0 auto">
+        <div class="spectrum-SplitView spectrum-SplitView--horizontal" style="height: fit-content; align-items: center;
      margin-top: 2rem; margin-bottom: 2rem">
-        <div class="spectrum-SplitView-pane" style="width: 7rem">
-            <p class="spectrum-Detail spectrum-Detail--sizeXL">Total:</p>
+            <div class="spectrum-SplitView-pane" style="width: 7rem">
+                <p class="spectrum-Detail spectrum-Detail--sizeXL">Total:</p>
+            </div>
+            <div class="spectrum-SplitView-splitter" style="display: none"></div>
+            <div class="spectrum-SplitView-pane" style="flex: 1; width: 5rem">
+                <div class="count-loader" id="count-loader">Loading...</div>
+                <p class="spectrum-Body spectrum-Body--sizeM" id="count"></p>
+            </div>
+
+
         </div>
+    </div>
 
 
-        <div class="spectrum-SplitView-splitter"></div>
-        <div class="spectrum-SplitView-pane" style="flex: 1; width: 5rem">
-            <!--loader-->
-            <div class="spectrum-ProgressCircle spectrum-ProgressCircle--indeterminate spectrum-ProgressCircle--small"
-                 id="loader">
-                <div class="spectrum-ProgressCircle-track"></div>
-                <div class="spectrum-ProgressCircle-fills">
-                    <div class="spectrum-ProgressCircle-fillMask1">
-                        <div class="spectrum-ProgressCircle-fillSubMask1">
-                            <div class="spectrum-ProgressCircle-fill"></div>
+    <div class="spectrum-SplitView spectrum-SplitView--horizontal" style="height: fit-content; display: flex;
+    margin-left: 7rem">
+        <div class="spectrum-SplitView-pane aligner" style="width: 10rem;">
+            <div style="margin-bottom: 1rem">
+                <p class="spectrum-Body spectrum-Body--sizeM">On/off parser</p>
+            </div>
+            <div class="button r" id="button-3">
+                <label for="toggleStart"></label>
+                <input type="checkbox" class="checkbox" id="toggleStart">
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-container" style="display: flex; justify-content: center">
+        <div class="spectrum-TagGroup" role="list" aria-label="list" id="collectedLinksWrapper"
+             style="
+                border: 1px solid red;
+                border-radius: 0.5rem;
+                color: red;
+                font-weight: bold;
+                font-size: .9rem;
+                margin-right: 4rem
+            "
+        >
+            <div class="spectrum-Tag spectrum-Tag--sizeS spectrum-TagGroup-item is-invalid" role="listitem"
+                 style="display: flex">
+                collected links + <span class="spectrum-Tag-label" id="added">0</span>  <!--loader-->
+                <div class="spectrum-ProgressCircle spectrum-ProgressCircle--indeterminate spectrum-ProgressCircle--small"
+                     id="loader" style="margin-left: .5rem">
+                    <div class="spectrum-ProgressCircle-track"></div>
+                    <div class="spectrum-ProgressCircle-fills">
+                        <div class="spectrum-ProgressCircle-fillMask1">
+                            <div class="spectrum-ProgressCircle-fillSubMask1">
+                                <div class="spectrum-ProgressCircle-fill"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="spectrum-ProgressCircle-fillMask2">
-                        <div class="spectrum-ProgressCircle-fillSubMask2">
-                            <div class="spectrum-ProgressCircle-fill"></div>
+                        <div class="spectrum-ProgressCircle-fillMask2">
+                            <div class="spectrum-ProgressCircle-fillSubMask2">
+                                <div class="spectrum-ProgressCircle-fill"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <p class="spectrum-Body spectrum-Body--sizeM" id="count"></p>
         </div>
 
+        <div class="spectrum-Examples-item" id="error-alert" style="    margin-right: 3rem">
+            <div class="spectrum-HelpText spectrum-HelpText--sizeM spectrum-HelpText--negative">
+                <svg class="spectrum-Icon spectrum-Icon--sizeM spectrum-HelpText-validationIcon" focusable="false"
+                     aria-hidden="true">
+                    <use xlink:href="#spectrum-icon-18-Alert"/>
+                </svg>
+                <div class="spectrum-HelpText-text">Cannot start parsing. Facebook tab is not opened!</div>
+            </div>
+        </div>
 
     </div>
 </div>
 
-
-<div class="spectrum-SplitView spectrum-SplitView--horizontal" style="height: fit-content; display: flex; justify-content: center;">
-    <div class="spectrum-SplitView-pane aligner" style="width: 10rem; vertical-align: center;">
-        <div style="margin-bottom: 1rem">
-            <p class="spectrum-Body spectrum-Body--sizeM">On/off parser</p>
-        </div>
-        <div class="button r" id="button-3">
-            <label for="toggleStart"></label>
-            <input type="checkbox" class="checkbox" id="toggleStart">
-            <div class="knobs"></div>
-            <div class="layer"></div>
-        </div>
-    </div>
-</div>
-
-<div class="control-container" style="display: flex; justify-content: center">
-    <div class="spectrum-TagGroup" role="list" aria-label="list" id="collectedLinksWrapper"
-    style="
-        border: 1px solid red;
-        border-radius: 0.5rem;
-        color: red;
-        font-weight: bold;
-        font-size: .9rem;
-    "
-    >
-        <div class="spectrum-Tag spectrum-Tag--sizeS spectrum-TagGroup-item is-invalid" role="listitem">
-            collected links + <span class="spectrum-Tag-label" id="added">0</span>
-        </div>
-    </div>
-
-    <div class="spectrum-Examples-item" id="error-alert">
-        <div class="spectrum-HelpText spectrum-HelpText--sizeM spectrum-HelpText--negative">
-            <svg class="spectrum-Icon spectrum-Icon--sizeM spectrum-HelpText-validationIcon" focusable="false"
-                 aria-hidden="true">
-                <use xlink:href="#spectrum-icon-18-Alert"/>
-            </svg>
-            <div class="spectrum-HelpText-text">Cannot start parsing. Facebook tab is not opened!</div>
-        </div>
-    </div>
-
-</div>
 <script src="app.js" defer></script>
 </body>
 </html>

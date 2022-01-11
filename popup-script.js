@@ -23,6 +23,7 @@ const uiConfig = {
                 switch(response.message){
                     case 'success':
                         window.location.replace('./popup.html')
+                        localStorage.draft = JSON.stringify([])
                         chrome.tabs.create({ url: "https://www.facebook.com/notifications" });
                         return true
                     case 'error':

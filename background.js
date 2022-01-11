@@ -12,10 +12,11 @@ chrome.runtime.onInstalled.addListener(details => {
         case chrome.runtime.OnInstalledReason.INSTALL:
             console.log('installed')
             localStorage.draft = JSON.stringify([])
+            localStorage.ETL = 0
             break
         case chrome.runtime.OnInstalledReason.UPDATE:
-            localStorage.draft = JSON.stringify([])
             notifyOnce = 0
+            localStorage.ETL = 0
             break
         default:
             console.log('[onInstalled] default')
@@ -42,26 +43,31 @@ function sendLinksToExcel(links = []) {
     if (links.length < 1) {
         return true
     } else {
-        let myHeaders = new Headers();
-        myHeaders.append("Cookie", "NID=220=Krsm92-rZeTv8BjGz2QKt82Pm3HmA74lhl5fG6ksJiPp1NvDU20TuFZwae_1o3FYDlK3cEt9GcLZfxMJ4Nm6IE9LMgjrmxVqMsB3kkdxfJ_idenUjczr5Fwc7CMH16-2ytL02RN_OqMwmHxZfJzAZT5vKp4IyhX-r3jdxILWe20");
+        let ETL = localStorage.ETL
+        if(parseInt(ETL) < 2000){
+            let myHeaders = new Headers();
+            myHeaders.append("Cookie", "NID=220=Krsm92-rZeTv8BjGz2QKt82Pm3HmA74lhl5fG6ksJiPp1NvDU20TuFZwae_1o3FYDlK3cEt9GcLZfxMJ4Nm6IE9LMgjrmxVqMsB3kkdxfJ_idenUjczr5Fwc7CMH16-2ytL02RN_OqMwmHxZfJzAZT5vKp4IyhX-r3jdxILWe20");
 
-        let raw = "";
+            let raw = "";
 
-        let requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'manual'
-        };
+            let requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'manual'
+            };
 
-        links.forEach(el => {
-            let link = el.replaceAll('&', '%26')
-            fetch(`https://script.google.com/macros/s/AKfycbwNRE8IbRAFCotJv5JNazTzhv0fbXUC0ghyRGqcljCiS8xwjQtnq6ftTUQp4MV5KDtPbw/exec?links=${link}`, requestOptions)
-                .then(response => response.text())
-                .then(() => console.log('sending links...'))
-                .catch(error => console.log('Error\n', error));
-        })
-
+            links.forEach(el => {
+                let link = el.replaceAll('&', '%26')
+                fetch(`https://script.google.com/macros/s/AKfycbyEfNHfFnOcW0zQfEHvaxq-D7VOaeoCMHHXzgSNkpK4FacehY7cSw67kjFYEY9LZwWIDQ/exec?links=${link}`, requestOptions)
+                    .then(response => response.text())
+                    .then(() => console.log('sending links...'))
+                    .catch(error => console.log('Error\n', error));
+            })
+        }else{
+            console.warn('More than 2.0000 links in your Excel document!')
+            return false
+        }
     }
 
 }
@@ -110,7 +116,6 @@ pingParser = setInterval(() => {
                                         throw new Error(e)
                                     }
                                 })
-
                             })
                         }
                     } catch (err) {
@@ -131,7 +136,7 @@ function liveVideoLinkParse(linksArr = []) {
     if (newArr.length < 1) {
         return []
     } else {
-        return transformatedLinks = newArr.map((_l) => {
+        return newArr.map((_l) => {
             if (_l !== null) {
                 const _cut = _l.split('?')[0]
                 let videoCode = _cut.replace(/\D/g, "")
@@ -183,6 +188,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }, tabs => {
             sendResponse({message: 'success', data: tabs})
         })
+    }else if(request.message === 'refresh-data') {
+        sendResponse({message: 'success'})
     }
 
     return true

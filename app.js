@@ -7,7 +7,8 @@ const baseAppUrl = `chrome-extension://${extId}/`
 if (window.location.href === baseAppUrl + 'main.html') {
     const popover = document.querySelector('#show-popover')
     changeStatus({
-        'active': 'none'
+        'active': 'none',
+        'count-loader': 'none'
     })
     document.addEventListener('click', e => {
         if(e.target.id === 'more-btn' || e.target.classList.contains('is-open')){
@@ -36,6 +37,16 @@ if (window.location.href === baseAppUrl + 'main.html') {
             }
         })
     })
+
+    document.querySelector('#refresh').addEventListener('click', () => {
+        chrome.runtime.sendMessage({message: 'refresh-data'}, (response) => {
+            if (response.message === 'success') {
+                getLinks({refresh: true})
+            } else {
+                console.error("ERROR: Couldn't refresh data...")
+            }
+        })
+    })
 }
 
 const output = document.querySelector('#count'),
@@ -45,15 +56,13 @@ const output = document.querySelector('#count'),
 function loaded(isLoaded){
     if (isLoaded) {
         changeStatus({
-            'count': 'inline',
             'collectedLinksWrapper': 'none',
             'loader': 'none'
         })
     } else {
         changeStatus({
-            'count': 'none',
             'collectedLinksWrapper': 'inline-block',
-            'loader': 'block'
+            'loader': 'inline-flex'
         })
     }
 }
@@ -61,14 +70,14 @@ function loaded(isLoaded){
 function totalLoaded(isLoaded){
     if(isLoaded){
         changeStatus({
-            'count': 'inline',
-            'loader': 'none'
+            'count-loader': 'none',
+            'count': 'inline-block'
         })
         toggleStart.removeAttribute('disabled')
     }else{
         changeStatus({
-            'count': 'none',
-            'loader': 'block'
+            'count-loader': 'inline-block',
+            'count': 'none'
         })
         toggleStart.setAttribute('disabled', '')
     }
@@ -107,45 +116,57 @@ chrome.storage.sync.get(['isParserStarted'], result => {
 })
 
 //Fetching links from real-time database
-function getLinks(){
+function getLinks(r) {
+    let {refresh} = r ?? {}
+    let refreshed = refresh ?? false
     chrome.storage.sync.get(['isParserStarted'], result => {
-        if(result.isParserStarted){
-            return true
-        }else{
-            totalLoaded(false)
-            const url = "https://script.google.com/macros/s/AKfycbwNRE8IbRAFCotJv5JNazTzhv0fbXUC0ghyRGqcljCiS8xwjQtnq6ftTUQp4MV5KDtPbw/exec?links"
-            try{
-                fetch(url, {
-                    method: 'GET',
-                    redirect: 'follow'
+        totalLoaded(false)
+        const url = "https://script.google.com/macros/s/AKfycbyEfNHfFnOcW0zQfEHvaxq-D7VOaeoCMHHXzgSNkpK4FacehY7cSw67kjFYEY9LZwWIDQ/exec?links"
+        try {
+            fetch(url, {
+                method: 'GET',
+                redirect: 'follow'
+            })
+                .then(response => response.json())
+                .then(result => {
+                    let {data} = result
+                    return data.filter(el => el !== "")
                 })
-                    .then(response => response.json())
-                    .then(result => {
-                        let {data} = result
-                        return data.filter(el => el !== "")
-                    })
-                    .then(filterData => {
-                        const fdl = filterData.length
-                        if(fdl > 0){
-                            // if(fdl < 500) {
-                            //     localStorage.linksFromExcel = JSON.stringify(filterData)
-                            // }else{
-                            //     localStorage.linksFromExcel ? localStorage.removeItem(linksFromExcel) : null
-                            // }
-                            output.textContent = new Intl.NumberFormat('en-IN').format(fdl)
-                            totalLoaded(true)
-                        }else{
-                            output.textContent = "0"
-                            // localStorage.linksFromExcel = JSON.stringify([]);
-                            console.log('no links in database')
-                            totalLoaded(true)
-                            return true
+                .then(filterData => {
+                    const fdl = filterData.length
+                    localStorage.ETL = fdl
+                    if (fdl > 0) {
+                        // if(fdl < 500) {
+                        //     localStorage.linksFromExcel = JSON.stringify(filterData)
+                        // }else{
+                        //     localStorage.linksFromExcel ? localStorage.removeItem(linksFromExcel) : null
+                        // }
+                        output.textContent = new Intl.NumberFormat('en-IN').format(fdl)
+                        totalLoaded(true)
+                        if (refreshed || result.isParserStarted) {
+                            changeStatus('loader', 'inline-flex')
+                        } else {
+                            changeStatus('loader', 'none')
                         }
-                    })
-                    .catch(err => console.log(err))
-            }catch(err){
-                console.warn(err)
-            }
+                        return true
+                    } else {
+                        output.textContent = "0"
+                        // localStorage.linksFromExcel = JSON.stringify([]);
+                        console.log('no links in database')
+                        totalLoaded(true)
+                        if (refreshed || result.isParserStarted) {
+                            changeStatus('loader', 'inline-flex')
+                        } else {
+                            changeStatus('loader', 'none')
+                        }
+                        return true
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        } catch (err) {
+            throw new Error(err)
         }
     })
 }
@@ -224,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     changeStatus({
                         'active': 'block',
                         'inactive': 'none',
-                        'loader': 'block'
+                        'loader': 'inline-flex'
                     })
                     chrome.storage.sync.set({isParserStarted: true})
                     loaded(false)
