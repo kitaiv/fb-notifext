@@ -118,11 +118,12 @@ chrome.storage.sync.get(['isParserStarted'], result => {
 
 //Fetching links from real-time database
 function getLinks(r) {
-    let {refresh} = r ?? {}
-    let refreshed = refresh ?? false
+    let {refresh} = r ?? {},
+        refreshed = refresh ?? false;
+
     chrome.storage.sync.get(['isParserStarted'], result => {
         totalLoaded(false)
-        const url = "https://script.google.com/macros/s/AKfycbyEfNHfFnOcW0zQfEHvaxq-D7VOaeoCMHHXzgSNkpK4FacehY7cSw67kjFYEY9LZwWIDQ/exec?links"
+        const url = "https://script.google.com/macros/s/AKfycbzb24HrYjMrhCnU3iXL4iI2-BZyH7d8F0DCbTp8spzp8n5GLEoVIsG8ZMPLEDijbDk75w/exec?links"
         try {
             fetch(url, {
                 method: 'GET',

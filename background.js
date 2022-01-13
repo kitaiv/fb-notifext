@@ -59,7 +59,7 @@ function sendLinksToExcel(links = []) {
 
             links.forEach(el => {
                 let link = el.replaceAll('&', '%26')
-                fetch(`https://script.google.com/macros/s/AKfycbyEfNHfFnOcW0zQfEHvaxq-D7VOaeoCMHHXzgSNkpK4FacehY7cSw67kjFYEY9LZwWIDQ/exec?links=${link}`, requestOptions)
+                fetch(`https://script.google.com/macros/s/AKfycbzb24HrYjMrhCnU3iXL4iI2-BZyH7d8F0DCbTp8spzp8n5GLEoVIsG8ZMPLEDijbDk75w/exec?links=${link}`, requestOptions)
                     .then(response => response.text())
                     .then(() => console.log('sending links...'))
                     .catch(error => console.log('Error\n', error));
