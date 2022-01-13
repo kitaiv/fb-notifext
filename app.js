@@ -136,7 +136,7 @@ function getLinks(r) {
                 })
                 .then(filterData => {
                     const fdl = filterData.length
-                    localStorage.ETL = fdl
+                    fdl !== localStorage.ETL ? localStorage.ETL = fdl : false
                     if (fdl > 0) {
                         // if(fdl < 500) {
                         //     localStorage.linksFromExcel = JSON.stringify(filterData)
@@ -174,7 +174,6 @@ function getLinks(r) {
 }
 
 getLinks()
-
 
 let pingParser;
 
