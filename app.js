@@ -32,6 +32,7 @@ if (window.location.href === baseAppUrl + 'main.html') {
             if (response.message === 'success') {
                 //logic here
                 localStorage.clear();
+                toggleParser(false)
                 window.location.replace("./popup.html")
                 console.log('redirecting...')
             }
