@@ -37,14 +37,43 @@ Array.prototype.diff = function (a) {
     return this.filter(i => a.indexOf(i) < 0)
 }
 
-//Sending links to Excel
 
+//sending links to DB
+async function sendLinksToDB(l) {
+    let body = JSON.stringify({
+        "link": l
+    })
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        redirect: "manual",
+        body
+    }
+
+    const url = 'https://fb-links-db-server.herokuapp.com/api/store'
+
+    let data
+
+    await fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(result => data = result)
+        .catch(err => console.warn(err))
+
+    return await data
+}
+
+
+//Sending links to Excel
 function sendLinksToExcel(links = []) {
     if (links.length < 1) {
         return true
     } else {
         let ETL = localStorage.ETL
-        if(parseInt(ETL) < 2000){
+        if (parseInt(ETL) < 3000) {
             let myHeaders = new Headers();
             myHeaders.append("Cookie", "NID=220=Krsm92-rZeTv8BjGz2QKt82Pm3HmA74lhl5fG6ksJiPp1NvDU20TuFZwae_1o3FYDlK3cEt9GcLZfxMJ4Nm6IE9LMgjrmxVqMsB3kkdxfJ_idenUjczr5Fwc7CMH16-2ytL02RN_OqMwmHxZfJzAZT5vKp4IyhX-r3jdxILWe20");
 
@@ -59,10 +88,21 @@ function sendLinksToExcel(links = []) {
 
             links.forEach(el => {
                 let link = el.replaceAll('&', '%26')
-                fetch(`https://script.google.com/macros/s/AKfycbzb24HrYjMrhCnU3iXL4iI2-BZyH7d8F0DCbTp8spzp8n5GLEoVIsG8ZMPLEDijbDk75w/exec?links=${link}`, requestOptions)
-                    .then(response => response.text())
-                    .then(() => console.log('sending links...'))
-                    .catch(error => console.log('Error\n', error));
+                sendLinksToDB(link)
+                    .then(res => {
+                        if (res?.result) {
+                            fetch(`https://script.google.com/macros/s/AKfycbzb24HrYjMrhCnU3iXL4iI2-BZyH7d8F0DCbTp8spzp8n5GLEoVIsG8ZMPLEDijbDk75w/exec?links=${link}`, requestOptions)
+                                .then(response => response.text())
+                                .then(() => ++localStorage.lpl)
+                                .catch(error => {
+                                    console.warn('Error\n', error)
+                                    console.log('Trying again... ')
+                                });
+                        } else {
+                            return false
+                        }
+
+                    })
             })
         }else{
             console.warn('More than 2.0000 links in your Excel document!')

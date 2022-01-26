@@ -90,7 +90,7 @@ const getVideoCode = (link = '') => link.split("?")[1].split("&")[1].split("%")[
 
 const data =
     localStorage.getItem('userData') ? JSON.parse(localStorage.userData) : null
-const user = data ? data.user : undefined
+const user = data ? data.user : null
 
 if (user) {
     document.querySelector('#displayName').textContent = user.displayName
@@ -100,7 +100,7 @@ if (user) {
 chrome.storage.sync.get(['isParserStarted'], result => {
     if (result.isParserStarted) {
         loaded(false)
-        collectedLinksAmount.textContent = Object.values(JSON.parse(localStorage.links)).length
+        collectedLinksAmount.textContent = localStorage.lpl
         changeStatus({
             'inactive': 'none',
             'active': 'block'
@@ -136,7 +136,6 @@ function getLinks(r) {
                 })
                 .then(filterData => {
                     const fdl = filterData.length
-                    fdl !== localStorage.ETL ? localStorage.ETL = fdl : false
                     if (fdl > 0) {
                         // if(fdl < 500) {
                         //     localStorage.linksFromExcel = JSON.stringify(filterData)
@@ -179,13 +178,15 @@ let pingParser;
 
 function toggleParser(isStarted) {
     if (isStarted) {
+        localStorage.lpl = 0
         pingParser = setInterval(() => {
-            collectedLinksAmount.textContent = Object.values(JSON.parse(localStorage.links)).length
+            collectedLinksAmount.textContent = localStorage.lpl
         }, 4000)
     } else {
         if(localStorage.links === null || undefined){
             throw new Error('no such item in Local Storage!')
         }else{
+            localStorage.removeItem('lpl')
             localStorage.draft = JSON.stringify([])
             let localLinksToObj = async () => JSON.parse(localStorage.links)
             localLinksToObj().then(result => {
