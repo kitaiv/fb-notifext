@@ -12,11 +12,9 @@ chrome.runtime.onInstalled.addListener(details => {
         case chrome.runtime.OnInstalledReason.INSTALL:
             console.log('installed')
             localStorage.draft = JSON.stringify([])
-            localStorage.ETL = 0
             break
         case chrome.runtime.OnInstalledReason.UPDATE:
             notifyOnce = 0
-            localStorage.ETL = 0
             break
         default:
             console.log('[onInstalled] default')
@@ -72,8 +70,7 @@ function sendLinksToExcel(links = []) {
     if (links.length < 1) {
         return true
     } else {
-        let ETL = localStorage.ETL
-        if (parseInt(ETL) < 3000) {
+        try{
             let myHeaders = new Headers();
             myHeaders.append("Cookie", "NID=220=Krsm92-rZeTv8BjGz2QKt82Pm3HmA74lhl5fG6ksJiPp1NvDU20TuFZwae_1o3FYDlK3cEt9GcLZfxMJ4Nm6IE9LMgjrmxVqMsB3kkdxfJ_idenUjczr5Fwc7CMH16-2ytL02RN_OqMwmHxZfJzAZT5vKp4IyhX-r3jdxILWe20");
 
@@ -90,6 +87,7 @@ function sendLinksToExcel(links = []) {
                 let link = el.replaceAll('&', '%26')
                 sendLinksToDB(link)
                     .then(res => {
+                        console.log('MongoDB RES::: ', res)
                         if (res?.result) {
                             fetch(`https://script.google.com/macros/s/AKfycbzb24HrYjMrhCnU3iXL4iI2-BZyH7d8F0DCbTp8spzp8n5GLEoVIsG8ZMPLEDijbDk75w/exec?links=${link}`, requestOptions)
                                 .then(response => response.text())
@@ -103,10 +101,10 @@ function sendLinksToExcel(links = []) {
                         }
 
                     })
+                    .catch(err => console.log(err))
             })
-        }else{
-            console.warn('More than 2.0000 links in your Excel document!')
-            return false
+        }catch (e) {
+            throw new Error(e)
         }
     }
 
@@ -170,7 +168,6 @@ pingParser = setInterval(() => {
 
 //that's the heart of the parser
 function liveVideoLinkParse(linksArr = []) {
-
     let newArr = linksArr.map(l => l.includes("live_video") ? l : null).filter(el => el != null)
     // const linksFromExcl = JSON.parse(localStorage.linksFromExcel)
     if (newArr.length < 1) {

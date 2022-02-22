@@ -145,9 +145,13 @@ function getLinks(r) {
                         output.textContent = new Intl.NumberFormat('en-IN').format(fdl)
                         totalLoaded(true)
                         if (refreshed || result.isParserStarted) {
-                            changeStatus('loader', 'inline-flex')
+                            changeStatus({
+                                'loader': 'inline-flex'
+                            })
                         } else {
-                            changeStatus('loader', 'none')
+                            changeStatus({
+                                'loader': 'none'
+                            })
                         }
                         return true
                     } else {
@@ -156,9 +160,13 @@ function getLinks(r) {
                         console.log('no links in database')
                         totalLoaded(true)
                         if (refreshed || result.isParserStarted) {
-                            changeStatus('loader', 'inline-flex')
+                            changeStatus({
+                                'loader': 'inline-flex'
+                            })
                         } else {
-                            changeStatus('loader', 'none')
+                            changeStatus({
+                                'loader': 'none'
+                            })
                         }
                         return true
                     }

@@ -1,6 +1,6 @@
 {
   "name": "fb-notifext",
-  "version": "1.0.1",
+  "version": "6.0",
   "description": "facebook chrome extension to parse live broadcast links",
   "main": "app.js",
   "scripts": {
