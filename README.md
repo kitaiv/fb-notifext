@@ -3,7 +3,7 @@ chrome extension for parsing live video links from facebook
 
 # I'm going to present you step-by-step how to clone and successfuly start using this chrome extension
 
-# Please make sure you have Node.js install on your computer
+# Please make sure you have Node.js installed on your computer
 # If not installed --> (https://nodejs.org/en/)
 
 >Step 1
